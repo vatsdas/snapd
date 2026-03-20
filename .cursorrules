@@ -1,0 +1,11 @@
+This is a Next.js 14 app router project using TypeScript.
+Database: Supabase (Postgres). Always use the Supabase JS client from @/lib/supabase.ts. Never use an ORM.
+Payments: Stripe. Always validate webhook signatures. Use test mode keys during development.
+Email: Resend.
+All environment variables come from process.env — never hardcode secrets.
+API routes live in /app/api/ as route.ts files using Next.js route handlers.
+Always return typed JSON responses from API routes.
+Validate all incoming request bodies using Zod before processing.
+Database types come from @/types/database.ts.
+Never generate UI components or pages unless explicitly asked.
+Keep all business logic in /lib/ files, not inside route handlers.tu
