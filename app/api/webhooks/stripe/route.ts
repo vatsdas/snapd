@@ -2,19 +2,14 @@ import { NextResponse } from 'next/server'
 
 import { handleStripeWebhook } from '@/lib/stripe-webhook'
 
-// Stripe requires the raw request body for signature verification.
-// This `config` shape is used by Next.js Pages Router; it is harmless here and
-// included per project convention / requirement.
-export const config = { api: { bodyParser: false } }
-
 /** Receives and verifies Stripe webhooks, then updates Supabase accordingly. */
 export async function POST(req: Request) {
   try {
-    const rawBody = await req.text()
-    const signature = req.headers.get('stripe-signature')
+    const body = await req.text()
+    const signature = req.headers.get('stripe-signature') ?? ''
 
     const result = await handleStripeWebhook({
-      rawBody,
+      rawBody: body,
       stripeSignature: signature,
     })
 
