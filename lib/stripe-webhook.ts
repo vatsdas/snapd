@@ -140,7 +140,7 @@ export async function handleStripeWebhook({
     }
 
     case 'invoice.payment_succeeded': {
-      const invoice = event.data.object as Stripe.Invoice
+      const invoice = event.data.object as Stripe.Invoice & { subscription?: string | null }
       const stripeSubscriptionId =
         typeof invoice.subscription === 'string' ? invoice.subscription : null
 
