@@ -179,7 +179,7 @@ export async function handleStripeWebhook({
     }
 
     case 'customer.subscription.updated': {
-      const sub = event.data.object as Stripe.Subscription
+      const sub = event.data.object as Stripe.Subscription & { current_period_end: number }
 
       const { error } = await supabaseAdmin
         .from('subscriptions')
