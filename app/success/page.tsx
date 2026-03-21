@@ -34,8 +34,10 @@ function iconForLineItem(description: string | null): string {
   return '🧊'
 }
 
+import { Suspense } from 'react'
+
 /** Order confirmation page; fetches Stripe session details via `/api/checkout/session`. */
-export default function SuccessPage() {
+function SuccessContent() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get('session_id') ?? ''
 
@@ -899,6 +901,18 @@ export default function SuccessPage() {
         </div>
       </div>
     </>
+  )
+}
+
+export default function SuccessPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#080C14', color: '#fff' }}>
+        Loading your order...
+      </div>
+    }>
+      <SuccessContent />
+    </Suspense>
   )
 }
 
