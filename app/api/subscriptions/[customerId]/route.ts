@@ -5,6 +5,7 @@ import {
   cancelSubscriptionById,
   getCustomerSubscriptions,
 } from '@/lib/subscribe'
+import { supabaseAdmin } from '@/lib/supabase'
 
 const paramsSchema = z.object({
   customerId: z.string().uuid(),
@@ -21,7 +22,7 @@ type SubscriptionsResponseOk = {
 type SubscriptionsResponseError = { data: null; error: string }
 type CancelResponseOk = { data: { message: string }; error: null }
 
-/** Returns subscriptions (with product details) for a given customer UUID. */
+/** Returns subscriptions (with product details) for a given auth user UUID. */
 export async function GET(
   _req: Request,
   context: { params: Promise<{ customerId: string }> | { customerId: string } },
@@ -37,9 +38,28 @@ export async function GET(
   }
 
   try {
-    const subscriptions = await getCustomerSubscriptions(
-      parsed.data.customerId,
-    )
+    // Resolve the Supabase Auth user ID to their email
+    const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.getUserById(parsed.data.customerId)
+    if (authError || !authUser?.user?.email) {
+      console.error('[Subscriptions API] Failed to resolve auth user', authError)
+      return NextResponse.json<SubscriptionsResponseOk>({ data: [], error: null })
+    }
+
+    // Look up the internal customer record by email
+    const { data: customer, error: custError } = await supabaseAdmin
+      .from('customers')
+      .select('id')
+      .eq('email', authUser.user.email)
+      .maybeSingle()
+
+    if (custError) throw custError
+
+    if (!customer) {
+      // No customer record yet — return empty
+      return NextResponse.json<SubscriptionsResponseOk>({ data: [], error: null })
+    }
+
+    const subscriptions = await getCustomerSubscriptions(customer.id)
     return NextResponse.json<SubscriptionsResponseOk>({
       data: subscriptions,
       error: null,
