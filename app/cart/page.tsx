@@ -244,7 +244,7 @@ export default function Cart() {
         .cart-item-name {
           font-family: var(--font-serif);
           font-size: 24px;
-          margin-bottom: 4px;
+          margin: 0;
         }
 
         .cart-item-meta {
@@ -410,7 +410,7 @@ export default function Cart() {
                   {cartItems.map((item, index) => (
                     <div key={index} className="cart-item">
                       <div className="cart-item-info">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                           <h3 className="cart-item-name" style={{ marginBottom: 0 }}>{item.name || 'Snapd Product'}</h3>
                           <div className="cart-item-price">${((item.price_cents || 0) / 100).toFixed(2)}</div>
                         </div>
