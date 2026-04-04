@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
 
 type ApiEnvelope<T> = { data: T; error: null } | { data: null; error: string }
 
@@ -33,6 +34,9 @@ function SuccessContent() {
   const [session, setSession] = useState<CheckoutSessionData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [summaryOpen, setSummaryOpen] = useState(true)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [user, setUser] = useState<any>(null)
+  const [cartCount, setCartCount] = useState(0)
 
   const orderNumber = useMemo(() => {
     const core = sessionId.slice(0, 12).toUpperCase()
@@ -46,6 +50,37 @@ function SuccessContent() {
   useEffect(() => {
     localStorage.removeItem('snapd-cart')
     window.dispatchEvent(new Event('cart-updated'))
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user || null)
+    })
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null)
+    })
+
+    const updateCartCount = () => {
+      const stored = localStorage.getItem('snapd-cart')
+      if (stored) {
+        try {
+          const items = JSON.parse(stored)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setCartCount(items.reduce((acc: number, item: any) => acc + (item.quantity || 1), 0))
+        } catch (e) {
+          setCartCount(0)
+        }
+      } else {
+        setCartCount(0)
+      }
+    }
+    updateCartCount()
+    window.addEventListener('storage', updateCartCount)
+    window.addEventListener('cart-updated', updateCartCount)
+
+    return () => {
+      window.removeEventListener('storage', updateCartCount)
+      window.removeEventListener('cart-updated', updateCartCount)
+      subscription.unsubscribe()
+    }
   }, [])
 
   useEffect(() => {
@@ -159,6 +194,50 @@ function SuccessContent() {
           display: flex;
           align-items: center;
           gap: 24px;
+        }
+
+        .nav-account-btn {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 12px 6px 6px;
+          border-radius: 100px;
+          border: 1px solid var(--border);
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          transition: border-color 0.2s;
+        }
+        .nav-account-btn:hover { border-color: var(--fg); }
+
+        .nab-initial {
+          width: 24px; height: 24px;
+          border-radius: 50%;
+          background: var(--fg);
+          color: var(--bg);
+          display: flex; align-items: center; justify-content: center;
+          font-weight: 600; font-size: 11px;
+        }
+
+        .nav-cart {
+          position: relative;
+          display: flex; align-items: center; justify-content: center;
+          width: 38px; height: 38px;
+          border-radius: 50%;
+          border: 1px solid transparent;
+          transition: border-color 0.2s;
+        }
+        .nav-cart:hover { border-color: var(--border); }
+        .nav-cart svg { width: 18px; height: 18px; stroke: var(--fg); }
+        .cart-count {
+          position: absolute;
+          top: -2px; right: -2px;
+          background: var(--fg);
+          color: var(--bg);
+          font-size: 9px; font-weight: 700;
+          width: 16px; height: 16px;
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
         }
 
         .page {
@@ -337,9 +416,25 @@ function SuccessContent() {
           <a href="/" className="nav-logo">Snapd</a>
           <div className="nav-center">
             <a href="/shop" className="nav-link">Shop</a>
+            <a href="/about" className="nav-link">About</a>
           </div>
           <div className="nav-right">
-            <a href="/account" className="nav-link">Account</a>
+            {user ? (
+              <a href="/account" className="nav-account-btn">
+                <div className="nab-initial">{(user.email || 'U').charAt(0).toUpperCase()}</div>
+                <span>Account</span>
+              </a>
+            ) : (
+              <a href="/account" className="nav-link">Account</a>
+            )}
+            <a href="/cart" className="nav-cart" aria-label="Cart">
+              <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 01-8 0"/>
+              </svg>
+              {cartCount > 0 && <div className="cart-count">{cartCount}</div>}
+            </a>
           </div>
         </nav>
 

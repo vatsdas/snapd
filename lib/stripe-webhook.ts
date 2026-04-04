@@ -139,6 +139,57 @@ export async function handleStripeWebhook({
       return { status: 200, body: { ok: true } }
     }
 
+    case 'customer.subscription.created': {
+      const sub = event.data.object as Stripe.Subscription & { current_period_end: number }
+      const stripeCustomerId = typeof sub.customer === 'string' ? sub.customer : null
+
+      if (!stripeCustomerId) {
+        console.error('[Webhook] customer.subscription.created: missing customer ID')
+        return { status: 200, body: { ok: true } }
+      }
+
+      // Look up the Supabase customer by their stripe_customer_id
+      const { data: customer, error: custError } = await supabaseAdmin
+        .from('customers')
+        .select('id')
+        .eq('stripe_customer_id', stripeCustomerId)
+        .maybeSingle()
+
+      if (custError) throw custError
+
+      if (!customer) {
+        console.error('[Webhook] customer.subscription.created: no Supabase customer for Stripe ID', stripeCustomerId)
+        return { status: 200, body: { ok: true } }
+      }
+
+      // Extract price ID from subscription items
+      const firstItem = sub.items?.data?.[0]
+      const stripePriceId = firstItem?.price?.id ?? ''
+      const productId = typeof firstItem?.price?.product === 'string' ? firstItem.price.product : ''
+
+      // Upsert the subscription record
+      const { error: upsertError } = await supabaseAdmin
+        .from('subscriptions')
+        .upsert({
+          customer_id: customer.id,
+          product_id: productId,
+          stripe_subscription_id: sub.id,
+          stripe_price_id: stripePriceId,
+          status: mapStripeSubscriptionStatus(sub.status),
+          current_period_end: toIsoFromUnixSeconds(sub.current_period_end),
+        }, {
+          onConflict: 'stripe_subscription_id',
+        })
+
+      if (upsertError) {
+        console.error('[Webhook] customer.subscription.created: upsert error', upsertError)
+        throw upsertError
+      }
+
+      console.log('[Webhook] Subscription created in Supabase for customer', customer.id)
+      return { status: 200, body: { ok: true } }
+    }
+
     case 'invoice.payment_succeeded': {
       const invoice = event.data.object as Stripe.Invoice & { subscription?: string | null }
       const stripeSubscriptionId =
