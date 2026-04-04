@@ -12,6 +12,7 @@ export default function Shop() {
   const [error, setError] = useState<string | null>(null)
   const [selectedProduct, setSelectedProduct] = useState<Products | null>(null)
   const [addingToCart, setAddingToCart] = useState(false)
+  const [animatingCartId, setAnimatingCartId] = useState<string | null>(null)
   
   const [filterScent, setFilterScent] = useState<string>('All')
 
@@ -810,19 +811,34 @@ export default function Shop() {
                           </button>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                             <div className="product-price">{formatPrice(p.price_cents)}</div>
-                            {cartItemIds.has(p.id) ? (
-                              <button className="added-to-cart-btn" disabled>
-                                In Cart
-                              </button>
-                            ) : (
-                              <button 
-                                className="add-to-cart-btn"
-                                disabled={checkoutLoading === p.id}
-                                onClick={() => onAddToCart(p)}
-                              >
-                                {checkoutLoading === p.id ? '...' : 'Add'}
-                              </button>
-                            )}
+                            <button
+                              className={cartItemIds.has(p.id) ? "added-to-cart-btn" : "add-to-cart-btn"}
+                              style={{
+                                background: cartItemIds.has(p.id) || animatingCartId === p.id ? 'var(--fg)' : '',
+                                color: cartItemIds.has(p.id) || animatingCartId === p.id ? 'var(--bg)' : '',
+                                borderColor: cartItemIds.has(p.id) || animatingCartId === p.id ? 'var(--fg)' : '',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                transition: 'all 0.3s ease',
+                                gap: '8px'
+                              }}
+                              disabled={cartItemIds.has(p.id)}
+                              onClick={() => {
+                                if (cartItemIds.has(p.id)) return;
+                                setAnimatingCartId(p.id)
+                                setTimeout(() => {
+                                  onAddToCart(p)
+                                  setAnimatingCartId(null)
+                                }, 800)
+                              }}
+                            >
+                              {cartItemIds.has(p.id) 
+                                ? 'In Cart' 
+                                : animatingCartId === p.id 
+                                  ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                  : 'Add'}
+                            </button>
                           </div>
                         </div>
                       </div>
