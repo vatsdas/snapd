@@ -909,30 +909,36 @@ export default function Shop() {
                   <div className="modal-scent">{selectedProduct.scent} · {selectedProduct.intensity} Intensity</div>
                   <p className="modal-desc">{selectedProduct.description || "Precision-engineered formula designed to provide instant clarity without the crash."}</p>
                   <div className="modal-price">{formatPrice(selectedProduct.price_cents)}</div>
-                  {cartItemIds.has(selectedProduct.id) ? (
-                    <button className="added-to-cart-btn" style={{ background: 'var(--fg)', color: 'var(--bg)', borderRadius: 100, border: 'none', padding: '16px 32px' }} disabled>
-                      Already In Cart
-                    </button>
-                  ) : (
-                    <button 
-                      className="modal-btn" 
-                      style={{
-                        background: addingToCart ? 'var(--fg)' : '',
-                        color: addingToCart ? 'var(--bg)' : '',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onClick={() => {
-                        setAddingToCart(true)
+                  <button 
+                    className="modal-btn" 
+                    style={{
+                      background: cartItemIds.has(selectedProduct.id) || addingToCart ? 'var(--fg)' : '',
+                      color: cartItemIds.has(selectedProduct.id) || addingToCart ? 'var(--bg)' : '',
+                      borderRadius: 100,
+                      border: cartItemIds.has(selectedProduct.id) || addingToCart ? '1px solid var(--fg)' : '1px solid var(--border)',
+                      padding: '16px 32px',
+                      transition: 'all 0.3s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px'
+                    }}
+                    disabled={cartItemIds.has(selectedProduct.id)}
+                    onClick={() => {
+                      if (cartItemIds.has(selectedProduct.id)) return;
+                      setAddingToCart(true)
+                      setTimeout(() => {
                         onAddToCart(selectedProduct)
-                        setTimeout(() => {
-                          setAddingToCart(false)
-                          setSelectedProduct(null)
-                        }, 600)
-                      }}
-                    >
-                      {addingToCart ? 'Added!' : 'Add to Cart'}
-                    </button>
-                  )}
+                        setAddingToCart(false)
+                      }, 800)
+                    }}
+                  >
+                    {cartItemIds.has(selectedProduct.id) 
+                      ? 'Already in Cart' 
+                      : addingToCart 
+                        ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        : 'Add to Cart'}
+                  </button>
                 </div>
               </div>
             </div>
