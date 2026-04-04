@@ -93,23 +93,15 @@ export default function Shop() {
 
   const filteredProducts = useMemo(() => {
     if (!products) return []
-    return products.filter((p) => {
+    const base = products.filter(p => !p.name.toLowerCase().includes('refill'))
+    return base.filter((p) => {
       let sMatch = false
       if (filterScent === 'All') {
         sMatch = true
       } else {
-        const productScent = p.scent.toLowerCase()
-        const targetScent = filterScent.toLowerCase()
-        if (productScent === targetScent) {
-          sMatch = true
-        } else if (targetScent.includes('calm') && productScent.includes('calm')) {
-          sMatch = true 
-        } else if (targetScent.includes('icy') && productScent.includes('icy')) {
-          sMatch = true
-        }
+        sMatch = p.scent?.toLowerCase() === filterScent.toLowerCase()
       }
-      
-      const intensityMatch = filterIntensity === 'All' || p.intensity.toLowerCase() === filterIntensity.toLowerCase()
+      const intensityMatch = filterIntensity === 'All' || p.intensity?.toLowerCase() === filterIntensity.toLowerCase()
       return sMatch && intensityMatch
     })
   }, [products, filterScent, filterIntensity])
@@ -156,7 +148,37 @@ export default function Shop() {
   const ScentFilters = ['All', 'Original', 'Icy Rush', 'Inferno', 'Focus', 'Calm Sharp']
   const IntensityFilters = ['All', 'Mild', 'Medium', 'Extreme']
 
-  function getScentColorClass(scent: string) {
+  async function onSubscribe(plan: 'monthly' | 'yearly') {
+    if (!user) {
+      window.location.href = '/login'
+      return
+    }
+    
+    // Defaulting to the existing /api/subscribe Stripe trigger. 
+    // This will activate the currently configured stripe Subscription ID.
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer_email: user.email,
+          customer_name: user?.user_metadata?.full_name || '',
+          plan: plan
+        })
+      })
+      const json = await res.json()
+      if (json.data?.url) {
+        window.location.href = json.data.url
+      } else {
+        alert(json.error || 'Failed to start subscription checkout')
+      }
+    } catch (err) {
+      alert('Network error')
+    }
+  }
+
+  function getScentColorClass(scent: string | null) {
+    if (!scent) return 'original'
     const s = scent.toLowerCase()
     if (s.includes('original')) return 'original'
     if (s.includes('icy')) return 'icy'
@@ -456,6 +478,131 @@ export default function Shop() {
           50% { opacity: 0.6; }
         }
 
+        /* Subscriptions Section */
+        .subscriptions-section {
+          margin-top: 64px;
+          padding-top: 64px;
+          border-top: 1px solid var(--border);
+        }
+        
+        .subscriptions-header {
+          text-align: center;
+          margin-bottom: 48px;
+        }
+
+        .subscriptions-title {
+          font-family: var(--font-serif);
+          font-size: 40px;
+          margin-bottom: 12px;
+        }
+
+        .subscriptions-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 32px;
+        }
+
+        .sub-card {
+          border: 1px solid var(--border);
+          padding: 48px;
+          background: #111111;
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .sub-card.featured {
+          border-color: var(--teal);
+        }
+
+        .sub-card-badge {
+          position: absolute;
+          top: 0; right: 0;
+          background: var(--teal);
+          color: var(--bg);
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          padding: 6px 16px;
+        }
+
+        .sub-card-title {
+          font-family: var(--font-serif);
+          font-size: 32px;
+          margin-bottom: 8px;
+        }
+
+        .sub-card-price {
+          font-size: 24px;
+          margin-bottom: 8px;
+        }
+
+        .sub-card-price span {
+          font-size: 14px;
+          color: var(--muted);
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+
+        .sub-card-desc {
+          color: var(--muted);
+          margin-bottom: 32px;
+          line-height: 1.6;
+        }
+
+        .sub-features {
+          list-style: none;
+          padding: 0;
+          margin: 0 0 32px 0;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .sub-feature {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-size: 14px;
+        }
+
+        .sub-feature svg {
+          width: 16px; height: 16px;
+          stroke: var(--teal);
+        }
+
+        .sub-btn {
+          margin-top: auto;
+          background: transparent;
+          color: var(--fg);
+          border: 1px solid var(--border);
+          padding: 16px;
+          text-align: center;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          font-size: 12px;
+          font-weight: 500;
+          cursor: pointer;
+          border-radius: 100px;
+          transition: all 0.2s;
+        }
+
+        .sub-card.featured .sub-btn {
+          background: var(--fg);
+          color: var(--bg);
+          border-color: var(--fg);
+        }
+
+        .sub-btn:hover {
+          opacity: 0.8;
+        }
+
+        @media (max-width: 900px) {
+          .subscriptions-grid { grid-template-columns: 1fr; }
+        }
+
         /* Modal */
         .modal-overlay {
           position: fixed;
@@ -683,6 +830,60 @@ export default function Shop() {
                 )}
               </div>
             )}
+          </div>
+
+          <div className="subscriptions-section">
+            <div className="subscriptions-header">
+              <h2 className="subscriptions-title">Never Run Out.</h2>
+              <p style={{ color: 'var(--muted)' }}>Precision alertness delivered on your schedule.</p>
+            </div>
+            
+            <div className="subscriptions-grid">
+              <div className="sub-card">
+                <h3 className="sub-card-title">Monthly Routine</h3>
+                <div className="sub-card-price">$14.99 <span>/ month</span></div>
+                <p className="sub-card-desc">Perfect for maintaining a steady supply of focus. Contains 3 fresh refill cartridges delivered precisely every 30 days.</p>
+                
+                <ul className="sub-features">
+                  <li className="sub-feature">
+                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>3 Refill Cartridges Base</span>
+                  </li>
+                  <li className="sub-feature">
+                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Free Shipping</span>
+                  </li>
+                  <li className="sub-feature">
+                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Cancel Anytime</span>
+                  </li>
+                </ul>
+                <button className="sub-btn" onClick={() => onSubscribe('monthly')}>Subscribe Monthly</button>
+              </div>
+
+              <div className="sub-card featured">
+                <div className="sub-card-badge">Most Popular</div>
+                <h3 className="sub-card-title">Annual Performance</h3>
+                <div className="sub-card-price">$119.99 <span>/ year</span></div>
+                <p className="sub-card-desc">The ultimate commitment to cognitive clarity. Get a year's supply of precision alertness at our absolute best value.</p>
+                
+                <ul className="sub-features">
+                  <li className="sub-feature">
+                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>36 Refill Cartridges Total</span>
+                  </li>
+                  <li className="sub-feature">
+                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Priority Shipping</span>
+                  </li>
+                  <li className="sub-feature">
+                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Save 33% Annually</span>
+                  </li>
+                </ul>
+                <button className="sub-btn" onClick={() => onSubscribe('yearly')}>Subscribe Yearly</button>
+              </div>
+            </div>
           </div>
           
           {/* Modal */}
