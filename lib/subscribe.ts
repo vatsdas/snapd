@@ -36,15 +36,22 @@ export async function createSubscriptionCheckout({
 
     stripeCustomerId = stripeCustomer.id
 
-    const { error: insertError } = await supabaseAdmin
-      .from('customers')
-      .insert({
-        email: customerEmail,
-        full_name: customerName ?? '',
-        stripe_customer_id: stripeCustomerId,
-      })
-
-    if (insertError) throw insertError
+    if (existingCustomer) {
+      const { error: updateError } = await supabaseAdmin
+        .from('customers')
+        .update({ stripe_customer_id: stripeCustomerId })
+        .eq('email', customerEmail)
+      if (updateError) throw updateError
+    } else {
+      const { error: insertError } = await supabaseAdmin
+        .from('customers')
+        .insert({
+          email: customerEmail,
+          full_name: customerName ?? '',
+          stripe_customer_id: stripeCustomerId,
+        })
+      if (insertError) throw insertError
+    }
   }
 
   const baseUrl = requiredEnv('NEXT_PUBLIC_URL')
