@@ -3,7 +3,6 @@
 import { useEffect, useState, useMemo } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { Products } from '@/types/database'
-import { getProductFilter } from '@/lib/product-colors'
 
 type ApiEnvelope<T> = { data: T; error: null } | { data: null; error: string }
 
@@ -678,10 +677,16 @@ export default function Shop() {
                 </button>
                 <div className="modal-image-wrap">
                   <img 
-                    src="/product-hero.png" 
+                    src={(() => {
+                      const s = (selectedProduct.scent || '').toLowerCase()
+                      if (s.includes('icy')) return '/product-hero-icy.png'
+                      if (s.includes('inferno')) return '/product-hero-inferno.png'
+                      if (s.includes('focus')) return '/product-hero-focus.png'
+                      if (s.includes('calm')) return '/product-hero-calm.png'
+                      return '/product-hero.png'
+                    })()}
                     alt={selectedProduct.name} 
                     className="modal-image" 
-                    style={{ filter: getProductFilter(selectedProduct.scent) }} 
                   />
                 </div>
                 <div className="modal-info">
