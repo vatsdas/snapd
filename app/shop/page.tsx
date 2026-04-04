@@ -13,6 +13,23 @@ export default function Shop() {
   const [selectedProduct, setSelectedProduct] = useState<Products | null>(null)
   
   const [filterScent, setFilterScent] = useState<string>('All')
+
+  function getImageSrc(p: Products | null) {
+    if (!p) return '/products/original-medium.png'
+    const s = (p.scent || '').toLowerCase()
+    const i = (p.intensity || 'medium').toLowerCase()
+    let scentBase = 'original'
+    if (s.includes('icy')) scentBase = 'icy'
+    if (s.includes('inferno')) scentBase = 'inferno'
+    if (s.includes('focus')) scentBase = 'focus'
+    if (s.includes('calm')) scentBase = 'calm'
+    
+    let intBase = 'medium'
+    if (i.includes('mild')) intBase = 'mild'
+    if (i.includes('extreme')) intBase = 'extreme'
+
+    return `/products/${scentBase}-${intBase}.png`
+  }
   const [filterIntensity, setFilterIntensity] = useState<string>('All')
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null)
 
@@ -632,6 +649,9 @@ export default function Shop() {
                     const sClass = getScentColorClass(p.scent)
                     return (
                       <div key={p.id} className={"product-card " + sClass}>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
+                          <img src={getImageSrc(p)} alt={p.name} style={{ height: '180px', objectFit: 'contain' }} />
+                        </div>
                         <h3 className="product-name">{p.name}</h3>
                         <p className="product-notes">{p.description || p.scent}</p>
                         <div className="product-intensity">Intensity: {p.intensity}</div>
@@ -677,14 +697,7 @@ export default function Shop() {
                 </button>
                 <div className="modal-image-wrap">
                   <img 
-                    src={(() => {
-                      const s = (selectedProduct.scent || '').toLowerCase()
-                      if (s.includes('icy')) return '/product-hero-icy.png'
-                      if (s.includes('inferno')) return '/product-hero-inferno.png'
-                      if (s.includes('focus')) return '/product-hero-focus.png'
-                      if (s.includes('calm')) return '/product-hero-calm.png'
-                      return '/product-hero.png'
-                    })()}
+                    src={getImageSrc(selectedProduct)}
                     alt={selectedProduct.name} 
                     className="modal-image" 
                   />
