@@ -1,23 +1,18 @@
 import type { Metadata } from 'next'
-import { Bebas_Neue, DM_Sans, DM_Serif_Display } from 'next/font/google'
+import { Instrument_Serif, Inter } from 'next/font/google'
 
 import './globals.css'
 
-const bebasNeue = Bebas_Neue({
+const instrumentSerif = Instrument_Serif({
   weight: '400',
   subsets: ['latin'],
-  variable: '--font-bebas-neue',
+  variable: '--font-instrument',
 })
 
-const dmSans = DM_Sans({
+const inter = Inter({
+  weight: '300',
   subsets: ['latin'],
-  variable: '--font-dm-sans',
-})
-
-const dmSerifDisplay = DM_Serif_Display({
-  weight: '400',
-  subsets: ['latin'],
-  variable: '--font-dm-serif-display',
+  variable: '--font-inter',
 })
 
 export const metadata: Metadata = {
@@ -33,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${bebasNeue.variable} ${dmSans.variable} ${dmSerifDisplay.variable} antialiased`}
+        className={`${instrumentSerif.variable} ${inter.variable} font-sans antialiased`}
       >
         {children}
       </body>
