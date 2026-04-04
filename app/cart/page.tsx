@@ -410,14 +410,12 @@ export default function Cart() {
                   {cartItems.map((item, index) => (
                     <div key={index} className="cart-item">
                       <div className="cart-item-info">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                          <div>
-                            <h3 className="cart-item-name">{item.name || 'Snapd Product'}</h3>
-                            <div className="cart-item-meta">
-                              {item.scent || 'Classic'} · {item.intensity || 'Standard'}
-                            </div>
-                          </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <h3 className="cart-item-name" style={{ marginBottom: 0 }}>{item.name || 'Snapd Product'}</h3>
                           <div className="cart-item-price">${((item.price_cents || 0) / 100).toFixed(2)}</div>
+                        </div>
+                        <div className="cart-item-meta" style={{ marginTop: '4px' }}>
+                          {item.scent || 'Classic'} · {item.intensity || 'Standard'}
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '24px' }}>
                           <div className="qty-controls" style={{ marginTop: 0 }}>
