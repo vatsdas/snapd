@@ -5,7 +5,7 @@ import { createSubscriptionCheckout } from '@/lib/subscribe'
 
 const bodySchema = z.object({
   customer_email: z.string().email(),
-  customer_name: z.string().min(1).optional(),
+  customer_name: z.string().optional(),
   plan: z.enum(['monthly', 'yearly']).optional().default('monthly'),
 })
 
