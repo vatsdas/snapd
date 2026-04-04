@@ -285,7 +285,7 @@ export default function Home() {
           </div>
           
           <div className="hero-image-wrap">
-            <img src="/products/original-medium.png" alt="Snapd Inhaler" className="hero-image" />
+            <img src="/landing-hero.png" alt="Snapd Inhaler" className="hero-image" />
           </div>
         </main>
 
