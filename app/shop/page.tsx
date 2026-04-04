@@ -11,6 +11,7 @@ export default function Shop() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedProduct, setSelectedProduct] = useState<Products | null>(null)
+  const [addingToCart, setAddingToCart] = useState(false)
   
   const [filterScent, setFilterScent] = useState<string>('All')
 
@@ -913,8 +914,23 @@ export default function Shop() {
                       Already In Cart
                     </button>
                   ) : (
-                    <button className="modal-btn" onClick={() => { onAddToCart(selectedProduct); setSelectedProduct(null); }}>
-                      Add to Cart
+                    <button 
+                      className="modal-btn" 
+                      style={{
+                        background: addingToCart ? 'var(--fg)' : '',
+                        color: addingToCart ? 'var(--bg)' : '',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onClick={() => {
+                        setAddingToCart(true)
+                        onAddToCart(selectedProduct)
+                        setTimeout(() => {
+                          setAddingToCart(false)
+                          setSelectedProduct(null)
+                        }, 600)
+                      }}
+                    >
+                      {addingToCart ? 'Added!' : 'Add to Cart'}
                     </button>
                   )}
                 </div>

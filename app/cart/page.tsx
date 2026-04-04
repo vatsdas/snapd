@@ -275,11 +275,6 @@ export default function Cart() {
           font-size: 13px;
         }
 
-        .cart-item-right {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          justify-content: space-between;
         }
 
         .cart-item-price {
@@ -415,19 +410,23 @@ export default function Cart() {
                   {cartItems.map((item, index) => (
                     <div key={index} className="cart-item">
                       <div className="cart-item-info">
-                        <h3 className="cart-item-name">{item.name || 'Snapd Product'}</h3>
-                        <div className="cart-item-meta">
-                          {item.scent || 'Classic'} · {item.intensity || 'Standard'}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                          <div>
+                            <h3 className="cart-item-name">{item.name || 'Snapd Product'}</h3>
+                            <div className="cart-item-meta">
+                              {item.scent || 'Classic'} · {item.intensity || 'Standard'}
+                            </div>
+                          </div>
+                          <div className="cart-item-price">${((item.price_cents || 0) / 100).toFixed(2)}</div>
                         </div>
-                        <div className="qty-controls">
-                          <button className="qty-btn" onClick={() => changeQty(index, -1)}>−</button>
-                          <div className="qty-value">{item.quantity || 1}</div>
-                          <button className="qty-btn" onClick={() => changeQty(index, 1)}>+</button>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '24px' }}>
+                          <div className="qty-controls" style={{ marginTop: 0 }}>
+                            <button className="qty-btn" onClick={() => changeQty(index, -1)}>−</button>
+                            <div className="qty-value">{item.quantity || 1}</div>
+                            <button className="qty-btn" onClick={() => changeQty(index, 1)}>+</button>
+                          </div>
+                          <button className="remove-btn" onClick={() => removeItem(index)}>Remove</button>
                         </div>
-                      </div>
-                      <div className="cart-item-right">
-                        <div className="cart-item-price">${((item.price_cents || 0) / 100).toFixed(2)}</div>
-                        <button className="remove-btn" onClick={() => removeItem(index)}>Remove</button>
                       </div>
                     </div>
                   ))}

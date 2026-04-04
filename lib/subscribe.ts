@@ -115,10 +115,10 @@ export async function getCustomerSubscriptions(
       ...sub,
       product: product
         ? {
-            name: product.name,
-            scent: product.scent,
-            intensity: product.intensity,
-          }
+          name: product.name,
+          scent: product.scent,
+          intensity: product.intensity,
+        }
         : { name: '', scent: '', intensity: 'mild' },
     }
   })
