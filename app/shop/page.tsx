@@ -743,7 +743,7 @@ export default function Shop() {
         <main>
           <div className="shop-hero">
             <h1 className="shop-hero-title">Find Your Formula.</h1>
-            <p className="shop-hero-sub">5 scents. 3 intensities. 15 ways to stay sharp.</p>
+            <p className="shop-hero-sub">5 scents. 12 ways to stay sharp.</p>
           </div>
 
           <div className="filter-bar">
