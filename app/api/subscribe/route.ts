@@ -6,14 +6,14 @@ import { createSubscriptionCheckout } from '@/lib/subscribe'
 const bodySchema = z.object({
   customer_email: z.string().email(),
   customer_name: z.string().optional(),
-  plan: z.enum(['monthly', 'yearly']).optional().default('monthly'),
+  plan: z.enum(['monthly', 'annual']).optional().default('monthly'),
 })
 
 type SubscribeResponseOk = { data: { url: string }; error: null }
 type SubscribeResponseError = { data: null; error: string }
 
-const SUBSCRIPTION_PRICE_MONTHLY = 'price_1TIOwtAHswlzabd4H4DFi5nE'
-const SUBSCRIPTION_PRICE_YEARLY = 'price_1TIOx3AHswlzabd4lfFa6tNb'
+const SUBSCRIPTION_PRICE_MONTHLY = 'price_1TIYOLAHswlzabd41oNcHBd3'
+const SUBSCRIPTION_PRICE_ANNUAL = 'price_1TIYOLAHswlzabd4qXYpngOQ'
 
 /** Creates a Stripe Checkout Session for subscriptions. */
 export async function POST(req: Request) {
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const priceId = parsed.data.plan === 'yearly' ? SUBSCRIPTION_PRICE_YEARLY : SUBSCRIPTION_PRICE_MONTHLY
+    const priceId = parsed.data.plan === 'annual' ? SUBSCRIPTION_PRICE_ANNUAL : SUBSCRIPTION_PRICE_MONTHLY
     
     const result = await createSubscriptionCheckout({
       customerEmail: parsed.data.customer_email,

@@ -150,7 +150,7 @@ export default function Shop() {
   const ScentFilters = ['All', 'Original', 'Icy Rush', 'Inferno', 'Focus', 'Calm Sharp']
   const IntensityFilters = ['All', 'Mild', 'Medium', 'Extreme']
 
-  async function onSubscribe(plan: 'monthly' | 'yearly') {
+  async function onSubscribe(plan: 'monthly' | 'annual') {
     if (!user) {
       window.location.href = '/login'
       return
@@ -898,7 +898,7 @@ export default function Shop() {
                     <span>Save 33% Annually</span>
                   </li>
                 </ul>
-                <button className="sub-btn" onClick={() => onSubscribe('yearly')}>Subscribe Yearly</button>
+                <button className="sub-btn" onClick={() => onSubscribe('annual')}>Subscribe Yearly</button>
               </div>
             </div>
           </div>
