@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { Products } from '@/types/database'
+import { getProductFilter } from '@/lib/product-colors'
 
 type ApiEnvelope<T> = { data: T; error: null } | { data: null; error: string }
 
@@ -10,6 +11,7 @@ export default function Shop() {
   const [products, setProducts] = useState<Products[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [selectedProduct, setSelectedProduct] = useState<Products | null>(null)
   
   const [filterScent, setFilterScent] = useState<string>('All')
   const [filterIntensity, setFilterIntensity] = useState<string>('All')
@@ -437,6 +439,115 @@ export default function Shop() {
           0%, 100% { opacity: 0.3; }
           50% { opacity: 0.6; }
         }
+
+        /* Modal */
+        .modal-overlay {
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(10, 10, 10, 0.95);
+          backdrop-filter: blur(10px);
+          z-index: 200;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          animation: modalFadeIn 0.3s forwards;
+        }
+
+        .modal-content {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 64px;
+          max-width: 1000px;
+          width: 90%;
+          background: #111111;
+          border: 1px solid var(--border);
+          padding: 64px;
+          position: relative;
+          transform: scale(0.95);
+          opacity: 0;
+          animation: modalPop 0.4s 0.1s forwards cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-close {
+          position: absolute;
+          top: 24px; right: 24px;
+          background: none; border: none;
+          color: var(--muted); cursor: pointer;
+          transition: color 0.2s;
+        }
+        .modal-close:hover { color: var(--fg); }
+
+        .modal-image-wrap {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .modal-image {
+          width: 100%;
+          max-width: 400px;
+          object-fit: contain;
+        }
+
+        .modal-info {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+
+        .modal-title {
+          font-family: var(--font-serif);
+          font-size: 48px;
+          margin-bottom: 8px;
+        }
+
+        .modal-scent {
+          font-size: 13px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          color: var(--teal);
+          margin-bottom: 24px;
+        }
+
+        .modal-desc {
+          color: var(--muted);
+          line-height: 1.6;
+          margin-bottom: 32px;
+        }
+
+        .modal-price {
+          font-size: 24px;
+          margin-bottom: 32px;
+        }
+
+        .modal-btn {
+          background: var(--fg);
+          color: var(--bg);
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          font-size: 12px;
+          font-weight: 500;
+          padding: 16px 32px;
+          border: none;
+          cursor: pointer;
+          border-radius: 100px;
+          transition: opacity 0.2s;
+          text-align: center;
+        }
+        .modal-btn:hover { opacity: 0.8; }
+
+        @keyframes modalFadeIn {
+          to { opacity: 1; }
+        }
+        @keyframes modalPop {
+          to { transform: scale(1); opacity: 1; }
+        }
+
+        @media (max-width: 900px) {
+          .modal-content { grid-template-columns: 1fr; padding: 32px; gap: 32px; }
+          .modal-title { font-size: 32px; }
+        }
       `}</style>
       
       <div className="page-container">
@@ -527,20 +638,25 @@ export default function Shop() {
                         <div className="product-intensity">Intensity: {p.intensity}</div>
                         
                         <div className="product-bottom">
-                          <div className="product-price">{formatPrice(p.price_cents)}</div>
-                          {cartItemIds.has(p.id) ? (
-                            <button className="added-to-cart-btn" disabled>
-                              In Cart
-                            </button>
-                          ) : (
-                            <button 
-                              className="add-to-cart-btn"
-                              disabled={checkoutLoading === p.id}
-                              onClick={() => onAddToCart(p)}
-                            >
-                              {checkoutLoading === p.id ? '...' : 'Add'}
-                            </button>
-                          )}
+                          <button className="add-to-cart-btn" onClick={() => setSelectedProduct(p)}>
+                            Details
+                          </button>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                            <div className="product-price">{formatPrice(p.price_cents)}</div>
+                            {cartItemIds.has(p.id) ? (
+                              <button className="added-to-cart-btn" disabled>
+                                In Cart
+                              </button>
+                            ) : (
+                              <button 
+                                className="add-to-cart-btn"
+                                disabled={checkoutLoading === p.id}
+                                onClick={() => onAddToCart(p)}
+                              >
+                                {checkoutLoading === p.id ? '...' : 'Add'}
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
                     )
@@ -549,6 +665,43 @@ export default function Shop() {
               </div>
             )}
           </div>
+          
+          {/* Modal */}
+          {selectedProduct && (
+            <div className="modal-overlay" onClick={() => setSelectedProduct(null)}>
+              <div className="modal-content" onClick={e => e.stopPropagation()}>
+                <button className="modal-close" onClick={() => setSelectedProduct(null)}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+                <div className="modal-image-wrap">
+                  <img 
+                    src="/product-hero.png" 
+                    alt={selectedProduct.name} 
+                    className="modal-image" 
+                    style={{ filter: getProductFilter(selectedProduct.scent) }} 
+                  />
+                </div>
+                <div className="modal-info">
+                  <h2 className="modal-title">{selectedProduct.name}</h2>
+                  <div className="modal-scent">{selectedProduct.scent} · {selectedProduct.intensity} Intensity</div>
+                  <p className="modal-desc">{selectedProduct.description || "Precision-engineered formula designed to provide instant clarity without the crash."}</p>
+                  <div className="modal-price">{formatPrice(selectedProduct.price_cents)}</div>
+                  {cartItemIds.has(selectedProduct.id) ? (
+                    <button className="added-to-cart-btn" style={{ background: 'var(--fg)', color: 'var(--bg)', borderRadius: 100, border: 'none', padding: '16px 32px' }} disabled>
+                      Already In Cart
+                    </button>
+                  ) : (
+                    <button className="modal-btn" onClick={() => { onAddToCart(selectedProduct); setSelectedProduct(null); }}>
+                      Add to Cart
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </main>
 
         <footer>
