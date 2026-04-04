@@ -165,7 +165,26 @@ export async function handleStripeWebhook({
       // Extract price ID from subscription items
       const firstItem = sub.items?.data?.[0]
       const stripePriceId = firstItem?.price?.id ?? ''
-      const productId = typeof firstItem?.price?.product === 'string' ? firstItem.price.product : ''
+
+      // Resolve to a valid Supabase product UUID (stripe product IDs like 'prod_...' are not UUIDs)
+      let productId = ''
+      const { data: matchedProduct } = await supabaseAdmin
+        .from('products')
+        .select('id')
+        .eq('stripe_price_id', stripePriceId)
+        .maybeSingle()
+
+      if (matchedProduct) {
+        productId = matchedProduct.id
+      } else {
+        // Fallback: use the first product in the catalog
+        const { data: fallback } = await supabaseAdmin
+          .from('products')
+          .select('id')
+          .limit(1)
+          .single()
+        productId = fallback?.id ?? ''
+      }
 
       // Upsert the subscription record
       const { error: upsertError } = await supabaseAdmin
