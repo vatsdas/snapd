@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import Nav from '@/components/Nav'
 
 export default function Login() {
   const router = useRouter()
@@ -59,23 +60,7 @@ export default function Login() {
           min-height: 100vh;
         }
 
-        nav {
-          display: flex;
-          justify-content: space-between;
-          padding: 32px 64px;
-          position: fixed;
-          top: 0; left: 0; right: 0;
-          z-index: 100;
-          background: rgba(10, 10, 10, 0.85);
-          backdrop-filter: blur(20px);
-          border-bottom: 1px solid var(--border);
-        }
-        
-        .nav-logo {
-          font-family: var(--font-serif);
-          font-size: 28px;
-          letter-spacing: -0.5px;
-        }
+
 
         .auth-container {
           flex: 1;
@@ -220,9 +205,7 @@ export default function Login() {
       `}</style>
 
       <div className="page-container">
-        <nav>
-          <a href="/" className="nav-logo">Snapd</a>
-        </nav>
+        <Nav />
 
         <main className="auth-container">
           <div className="auth-card">
