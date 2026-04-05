@@ -2,7 +2,9 @@ import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { z } from 'zod'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY)
+}
 
 const ContactSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -25,7 +27,7 @@ export async function POST(req: Request) {
 
     const { name, email, subject, message } = parsed.data
 
-    await resend.emails.send({
+    await getResend().emails.send({
       from: 'onboarding@resend.dev',
       to: 'snapd.co@gmail.com',
       subject: `[Snapd Contact] ${subject} — from ${name}`,
