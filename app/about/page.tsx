@@ -437,8 +437,8 @@ export default function About() {
         <footer>
           <div>Snapd © 2026. Precision alertness.</div>
           <div style={{ display: 'flex', gap: '32px' }}>
-            <a href="#">Terms</a>
-            <a href="#">Privacy</a>
+            <a href="/terms">Terms</a>
+            <a href="/privacy">Privacy</a>
             <a href="#">Contact</a>
           </div>
         </footer>
