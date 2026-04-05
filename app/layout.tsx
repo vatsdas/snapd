@@ -17,7 +17,10 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: 'Snapd — Instant Alertness',
-  description: 'Instant alertness in under 3 seconds.',
+  description: 'Instant alertness. No caffeine. No crash.',
+  icons: {
+    icon: '/icon.svg',
+  },
 }
 
 export default function RootLayout({
