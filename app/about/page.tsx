@@ -485,16 +485,14 @@ export default function About() {
             
             <div className="founders-grid">
               <div className="founder-card">
-                <h3 className="founder-name">Founder Name</h3>
-                <div className="founder-role">CEO & Co-Founder</div>
+                <h3 className="founder-name">Ishayan Das</h3>
+                <div className="founder-role">Co-CEO & Co-Founder</div>
                 <p className="founder-quote">&quot;I almost fell asleep driving home from work one night. I started researching why nothing on the market worked fast enough — and that became Snapd.&quot;</p>
-                <div className="founder-bio">Placeholder background. Previously built and exited a consumer health brand. Obsessed with the intersection of neuroscience and everyday life.</div>
               </div>
               <div className="founder-card">
-                <h3 className="founder-name">Founder Name</h3>
-                <div className="founder-role">CTO & Co-Founder</div>
+                <h3 className="founder-name">Ranvir Tyagi</h3>
+                <div className="founder-role">Co-CEO & Co-Founder</div>
                 <p className="founder-quote">&quot;I spent years studying aromatic compounds. When I heard the idea for Snapd I knew exactly which receptors to target. The science was already there.&quot;</p>
-                <div className="founder-bio">Placeholder background. Formulation chemist with deep expertise in essential oil delivery systems and aromatic receptor science.</div>
               </div>
             </div>
           </section>
