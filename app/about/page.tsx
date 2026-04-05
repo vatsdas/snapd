@@ -255,6 +255,76 @@ export default function About() {
           .science-grid { grid-template-columns: 1fr; }
           .founders-grid { grid-template-columns: 1fr; }
         }
+
+        @media (max-width: 768px) {
+          .hero {
+            padding: 140px 24px 64px;
+          }
+          .editorial-title {
+            font-size: clamp(32px, 8vw, 48px);
+          }
+          .hero-sub {
+            font-size: 15px;
+            margin-top: 24px;
+          }
+          .mission-section {
+            padding: 48px 24px;
+            gap: 48px;
+          }
+          .mission-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+          }
+          .stats-section {
+            padding: 64px 24px;
+            gap: 24px;
+          }
+          .stat-num {
+            font-size: 40px;
+          }
+          .science-section {
+            padding: 64px 24px;
+          }
+          .science-header {
+            margin-bottom: 48px;
+          }
+          .science-grid {
+            gap: 32px;
+          }
+          .science-num {
+            font-size: 36px;
+          }
+          .science-title {
+            font-size: 22px;
+          }
+          .founders-section {
+            padding: 64px 24px;
+          }
+          .founders-header {
+            margin-bottom: 48px;
+          }
+          .founders-grid {
+            gap: 40px;
+          }
+          .founder-name {
+            font-size: 24px;
+          }
+          .founder-quote {
+            font-size: 18px;
+          }
+          .cta-section {
+            padding: 80px 24px;
+          }
+          .cta-title {
+            font-size: 36px;
+          }
+          footer {
+            padding: 32px 24px;
+            flex-direction: column;
+            gap: 16px;
+            text-align: center;
+          }
+        }
       `}</style>
       
       <div className="page-container">

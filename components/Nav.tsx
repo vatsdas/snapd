@@ -129,10 +129,14 @@ export default function Nav() {
           display: flex; align-items: center; justify-content: center;
         }
 
-        @media (max-width: 640px) {
-          .snapd-nav { padding: 20px 24px; }
+        @media (max-width: 768px) {
+          .snapd-nav { padding: 20px 20px; }
           .snapd-nav .nav-logo { font-size: 22px; }
           .snapd-nav .nav-center { gap: 20px; }
+          .snapd-nav .nav-right { gap: 16px; }
+          .snapd-nav .nav-account-btn span { display: none; }
+          .snapd-nav .nav-account-btn { padding: 4px; }
+          .snapd-nav .nav-link { font-size: 11px; }
         }
       `}</style>
 

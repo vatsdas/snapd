@@ -356,6 +356,61 @@ export default function Account() {
           margin-top: 24px;
         }
         .sub-cancel:hover { color: #EF4444; border-color: #EF4444; }
+
+        @media (max-width: 768px) {
+          .layout {
+            flex-direction: column;
+            padding-top: 80px;
+          }
+          .sidebar {
+            width: 100%;
+            height: auto;
+            position: relative;
+            top: auto;
+            border-right: none;
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0 0;
+            overflow-x: auto;
+          }
+          .sidebar-user {
+            padding: 0 20px 16px;
+            margin-bottom: 0;
+          }
+          .sidebar-name {
+            font-size: 22px;
+            margin-bottom: 4px;
+          }
+          .sidebar-nav {
+            flex-direction: row;
+            padding: 0 12px;
+            gap: 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+          }
+          .sidebar-item {
+            white-space: nowrap;
+            border-radius: 0;
+            padding: 12px 14px;
+            font-size: 11px;
+          }
+          .sidebar-logout {
+            display: none;
+          }
+          .main {
+            padding: 32px 20px;
+          }
+          .section-title {
+            font-size: 28px;
+          }
+          .card {
+            padding: 24px;
+          }
+          .card-header {
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
+          }
+        }
       `}</style>
 
       <div className="page-container">

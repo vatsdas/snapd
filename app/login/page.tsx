@@ -202,6 +202,18 @@ export default function Login() {
           margin-bottom: 24px;
           text-align: center;
         }
+
+        @media (max-width: 768px) {
+          .auth-container {
+            padding: 100px 20px;
+          }
+          .auth-card {
+            padding: 32px 24px;
+          }
+          .auth-title {
+            font-size: 28px;
+          }
+        }
       `}</style>
 
       <div className="page-container">

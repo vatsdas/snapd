@@ -120,6 +120,35 @@ export default function Home() {
           }
           .hero-image-wrap { margin-top: 48px; }
         }
+
+        @media (max-width: 768px) {
+          .hero {
+            padding: 120px 24px 40px;
+            min-height: auto;
+            gap: 32px;
+          }
+          .hero-title {
+            font-size: clamp(40px, 12vw, 64px);
+            letter-spacing: -1px;
+          }
+          .hero-sub {
+            font-size: 15px;
+            max-width: 280px;
+          }
+          .btn {
+            padding: 14px 28px;
+            font-size: 11px;
+          }
+          .hero-image {
+            max-height: 50vh;
+          }
+          footer {
+            padding: 32px 24px;
+            flex-direction: column;
+            gap: 16px;
+            text-align: center;
+          }
+        }
       `}</style>
       
       <div className="page-container">

@@ -286,6 +286,36 @@ export default function Cart() {
           margin-bottom: 16px;
         }
 
+        @media (max-width: 768px) {
+          .page {
+            padding: 120px 20px 48px;
+          }
+          .cart-title {
+            font-size: 32px;
+            margin-bottom: 32px;
+          }
+          .cart-layout {
+            grid-template-columns: 1fr;
+            gap: 32px;
+          }
+          .cart-item {
+            gap: 16px;
+            padding: 24px 0;
+          }
+          .cart-item-name {
+            font-size: 18px;
+          }
+          .summary-panel {
+            padding: 32px 24px;
+          }
+          .empty-cart {
+            padding: 80px 0;
+          }
+          .empty-cart-title {
+            font-size: 28px;
+          }
+        }
+
       `}</style>
       
       <div className="page-container">

@@ -628,6 +628,66 @@ export default function Shop() {
           .modal-content { grid-template-columns: 1fr; padding: 32px; gap: 32px; }
           .modal-title { font-size: 32px; }
         }
+
+        @media (max-width: 768px) {
+          .shop-hero {
+            padding: 120px 24px 48px;
+          }
+          .shop-hero-title {
+            font-size: clamp(32px, 8vw, 48px);
+          }
+          .shop-hero-sub {
+            font-size: 14px;
+          }
+          .filter-bar {
+            margin-bottom: 40px;
+            gap: 16px;
+          }
+          .filter-row {
+            gap: 8px;
+          }
+          .filter-pill {
+            font-size: 11px;
+            padding: 6px 12px;
+          }
+          .shop-container {
+            padding: 0 20px;
+            margin-bottom: 64px;
+          }
+          .product-card {
+            padding: 24px 16px;
+          }
+          .subscriptions-section {
+            margin-top: 40px;
+            padding-top: 40px;
+          }
+          .subscriptions-title {
+            font-size: 28px;
+          }
+          .subscriptions-grid {
+            grid-template-columns: 1fr;
+          }
+          .sub-card {
+            padding: 32px 24px;
+          }
+          .sub-card-title {
+            font-size: 24px;
+          }
+          .modal-content {
+            width: 95%;
+            padding: 24px;
+            gap: 24px;
+          }
+          .modal-title {
+            font-size: 28px;
+          }
+          footer {
+            padding: 32px 24px;
+            flex-direction: column;
+            gap: 16px;
+            text-align: center;
+          }
+        }
       `}</style>
       
       <div className="page-container">

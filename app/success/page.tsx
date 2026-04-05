@@ -293,6 +293,24 @@ function SuccessContent() {
           letter-spacing: 1px;
           border-radius: 100px;
         }
+
+        @media (max-width: 768px) {
+          .page {
+            padding: 120px 20px 48px;
+          }
+          .success-title {
+            font-size: 32px;
+          }
+          .content {
+            max-width: 100%;
+          }
+          .order-num-box {
+            padding: 24px;
+          }
+          .actions {
+            flex-direction: column;
+          }
+        }
       `}</style>
       
       <div className="page-container">
