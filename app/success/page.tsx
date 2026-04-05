@@ -10,6 +10,7 @@ type CheckoutSessionData = {
   customer_email: string | null
   amount_total: number | null
   payment_status: string
+  mode: string
   line_items: Array<{
     description: string | null
     quantity: number | null
@@ -234,6 +235,16 @@ function SuccessContent() {
         .item-info { flex: 1; }
         .item-name { font-size: 14px; margin-bottom: 4px; }
         .item-meta { font-size: 12px; color: var(--muted); }
+        .item-badge {
+          display: inline-block;
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          padding: 3px 10px;
+          border: 1px solid var(--teal);
+          color: var(--teal);
+          border-radius: 100px;
+        }
         .item-price { font-size: 14px; }
 
         .totals {
@@ -346,15 +357,22 @@ function SuccessContent() {
                 </button>
               </div>
               <div style={{ display: summaryOpen ? 'block' : 'none' }}>
-                {lineItems.map((li, idx) => (
-                  <div className="order-item" key={`${li.description ?? 'item'}-${idx}`}>
-                    <div className="item-info">
-                      <div className="item-name">{li.description ?? 'Item'}</div>
-                      <div className="item-meta">Qty: {li.quantity ?? 1}</div>
+                {lineItems.map((li, idx) => {
+                  const isSubscription = session?.mode === 'subscription'
+                  return (
+                    <div className="order-item" key={`${li.description ?? 'item'}-${idx}`}>
+                      <div className="item-info">
+                        <div className="item-name">{li.description ?? 'Item'}</div>
+                        {isSubscription ? (
+                          <div className="item-badge">Subscription</div>
+                        ) : (
+                          <div className="item-meta">Qty: {li.quantity ?? 1}</div>
+                        )}
+                      </div>
+                      <div className="item-price">{formatUsdFromCents(li.amount_total)}</div>
                     </div>
-                    <div className="item-price">{formatUsdFromCents(li.amount_total)}</div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
               <div className="totals" style={{ display: summaryOpen ? 'flex' : 'none' }}>
                 <div className="total-row">

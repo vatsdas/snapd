@@ -6,6 +6,7 @@ type CheckoutSessionData = {
   customer_email: string | null
   amount_total: number | null
   payment_status: string
+  mode: string
   line_items: Array<{
     description: string | null
     quantity: number | null
@@ -40,6 +41,7 @@ export async function GET(req: Request) {
       customer_email: session.customer_email ?? session.customer_details?.email ?? null,
       amount_total: session.amount_total ?? null,
       payment_status: session.payment_status ?? 'unpaid',
+      mode: session.mode ?? 'payment',
       line_items: lineItems.map((li) => ({
         description: li.description ?? null,
         quantity: li.quantity ?? null,

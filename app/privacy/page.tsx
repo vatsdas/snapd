@@ -163,7 +163,7 @@ export default function Privacy() {
 
           <section className="legal-section">
             <h2>Contact Us</h2>
-            <p className="legal-contact">If you have any questions about this Privacy Policy or how we handle your data, please contact us at <a href="mailto:privacy@snapd.com">privacy@snapd.com</a>.</p>
+            <p className="legal-contact">If you have any questions about this Privacy Policy or how we handle your data, please contact us at <a href="mailto:snapd.co@gmail.com">snapd.co@gmail.com</a>.</p>
           </section>
         </main>
 
