@@ -145,6 +145,7 @@ export default function Nav() {
         <div className="nav-center">
           <a href="/shop" className="nav-link">Shop</a>
           <a href="/about" className="nav-link">About</a>
+          <a href="/contact" className="nav-link">Contact</a>
         </div>
         <div className="nav-right">
           {user ? (
