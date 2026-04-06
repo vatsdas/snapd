@@ -157,6 +157,15 @@ export default function Shop() {
     { label: 'Extreme', value: 'extreme' },
   ]
 
+  function getProductTags(scent: string | null): string {
+    const s = (scent || '').toLowerCase()
+    if (s.includes('icy'))    return 'Eucalyptus · Spearmint · 1,8-Cineole'
+    if (s.includes('inferno')) return 'Camphor · Black Pepper · TRPV1 + TRPM8'
+    if (s.includes('focus'))  return 'Rosemary · Lemon · Cineole'
+    if (s.includes('calm'))   return 'Lavender · Peppermint · Linalool'
+    return 'Peppermint · Menthol · TRPM8'
+  }
+
   function getProductDescription(scent: string | null, intensity: string | null): string {
     const s = (scent || '').toLowerCase()
     const i = (intensity || '').toLowerCase()
@@ -796,7 +805,7 @@ export default function Shop() {
                           <img src={getImageSrc(p)} alt={p.name} style={{ height: '180px', objectFit: 'contain' }} />
                         </div>
                         <h3 className="product-name">{p.name}</h3>
-                        <p className="product-notes">{getProductDescription(p.scent, p.intensity)}</p>
+                        <p className="product-notes">{getProductTags(p.scent)}</p>
                         <div className="product-intensity">Intensity: {p.intensity}</div>
                         
                         <div className="product-bottom">
