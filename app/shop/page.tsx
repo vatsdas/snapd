@@ -164,29 +164,30 @@ export default function Shop() {
     const extreme = i.includes('extreme')
 
     if (s.includes('icy')) {
-      if (mild) return 'A cool, measured hit of arctic mint that lifts brain fog without overpowering. Perfect for sustained background focus during long work sessions.'
-      if (extreme) return 'Arctic menthol at full intensity — a sharp, immediate jolt that clears the mind and sharpens reaction time in seconds. Not for the faint-hearted.'
-      return 'Crisp peppermint and eucalyptus engineered to trigger an instant alertness response. A clean, refreshing experience that cuts through mental fatigue.'
+      // Eucalyptus + Spearmint — 1,8-cineole inhibits acetylcholinesterase
+      if (mild) return 'Eucalyptus and spearmint at a measured dose. 1,8-cineole inhibits acetylcholinesterase, gently raising acetylcholine for sharper memory and quieter focus. Ideal for students and long reading sessions.'
+      if (extreme) return 'Maximum eucalyptus and spearmint concentration. 1,8-cineole floods the olfactory pathway at full intensity, delivering a rapid acetylcholine surge and heightened cognitive clarity. Inhale once. Feel it in seconds.'
+      return 'Eucalyptus and spearmint working through a documented mechanism: 1,8-cineole inhibits acetylcholinesterase, increasing acetylcholine for improved memory consolidation and sustained cognition. The smart choice for mental performance.'
     }
     if (s.includes('inferno')) {
-      if (mild) return 'A warm, smouldering blend of chili and black pepper — enough heat to ignite focus without the burn. Ideal for early-morning routines.'
-      if (extreme) return 'Maximum capsaicin intensity. Delivers a fierce, immediate rush of energy and heightened awareness. Reserved for moments that demand peak performance.'
-      return 'Chili and ginger combine to create a bold, warming sensory impact that fires up your nervous system and keeps fatigue at bay.'
+      // Camphor + Black Pepper — activates TRPV1 AND TRPM8 simultaneously
+      if (extreme) return 'Camphor and black pepper at maximum load. Simultaneously fires TRPV1 heat receptors and TRPM8 cold receptors — a dual-channel sensory jolt that hits the locus coeruleus hard. Eyes will water. Built for severe fatigue and first-use reaction content.'
+      return 'Camphor and black pepper — the only Snapd formula that activates both TRPV1 and TRPM8 receptors at once. The dual sensory signal drives a stronger norepinephrine release from the locus coeruleus for deep, immediate alertness.'
     }
     if (s.includes('focus')) {
-      if (mild) return 'Gentle green tea and rosemary — a soft, natural lift that sharpens concentration without disrupting flow. Great for reading or creative work.'
-      if (extreme) return 'High-intensity botanical clarity formula: concentrated eucalyptus and peppermint layered over green tea extract for unstoppable deep-focus.'
-      return 'A precision blend of nootropic botanicals — green tea, rosemary, and lemon verbena — designed to enhance cognitive clarity and sustained attention.'
+      // Rosemary + Lemon — cineole content linked to working memory in peer-reviewed studies
+      if (mild) return 'Rosemary and lemon at a light, focused dose. Rosemary\'s cineole content is linked to improved working memory in peer-reviewed research. Subtle enough for the office; effective enough to matter at exam time.'
+      return 'Rosemary and lemon — backed by published research showing rosemary\'s cineole content improves working memory and processing speed. Inhale it during the 2pm slump or before anything that requires sustained analytical thinking.'
     }
     if (s.includes('calm')) {
-      if (mild) return 'Soft lavender and chamomile at a gentle intensity. Takes the edge off anxiety while keeping you grounded and quietly alert.'
-      if (extreme) return 'Full-spectrum calm at maximum depth — adaptogenic ashwagandha and lavender combined to silence stress and restore sharp, composed thinking.'
-      return 'Lavender, chamomile, and ashwagandha create a rare paradox: profound calm paired with sustained mental clarity. For when you need to be sharp without the tension.'
+      // Lavender + Peppermint — linalool lowers cortisol, menthol sustains norepinephrine
+      if (mild) return 'Lavender and peppermint in a gentle ratio. Linalool from lavender suppresses cortisol and calms the nervous system, while a light menthol dose sustains norepinephrine. Alert and composed — not wired.'
+      return 'Lavender and peppermint in precise balance. Linalool lowers cortisol so you lose the anxiety; menthol activates TRPM8 and sustains norepinephrine so you keep the sharpness. For high-stakes moments that demand calm focus, not jittery energy.'
     }
-    // original
-    if (mild) return 'The classic Snapd formula at a lighter intensity — an approachable entry point into inhaled alertness. Clean, subtle, and consistently effective.'
-    if (extreme) return 'Original Snapd pushed to its upper limit. Maximum bio-available caffeine and L-theanine delivery for those who demand an uncompromising edge.'
-    return 'The formula that started it all. Pure caffeine and L-theanine in perfect synergy — instant alertness without the jitters, no crash guaranteed.'
+    // Original — Peppermint + Menthol, strongest TRPM8 activator
+    if (mild) return 'Peppermint and menthol at a light, everyday dose. Menthol binds TRPM8 cold receptors in the nasal mucosa, signalling the locus coeruleus to release norepinephrine. The classic Snapd hit — clean, subtle, and reliably effective.'
+    if (extreme) return 'Peppermint and menthol at maximum concentration — the strongest TRPM8 activator in the Snapd line. Sends a high-amplitude signal up the olfactory nerve to the locus coeruleus in under 3 seconds. Built for drowsy drivers, night shifts, and anyone fighting serious fatigue.'
+    return 'The original formula. Peppermint and menthol bind to TRPM8 cold receptors in your nasal mucosa, bypassing the blood-brain barrier entirely and triggering norepinephrine release from the locus coeruleus in under 3 seconds. No stimulants. No crash. Just documented neuroscience.'
   }
 
   async function onSubscribe(plan: 'monthly' | 'annual') {
