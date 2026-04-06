@@ -94,13 +94,10 @@ export default function Shop() {
     if (!products) return []
     const base = products.filter(p => !p.name.toLowerCase().includes('refill'))
     return base.filter((p) => {
-      let sMatch = false
-      if (filterScent === 'All') {
-        sMatch = true
-      } else {
-        sMatch = p.scent?.toLowerCase() === filterScent.toLowerCase()
-      }
-      const intensityMatch = filterIntensity === 'All' || p.intensity?.toLowerCase() === filterIntensity.toLowerCase()
+      const dbScent = (p.scent || '').toLowerCase()
+      const sMatch = filterScent === 'All' || dbScent === filterScent.toLowerCase()
+      const dbIntensity = (p.intensity || '').toLowerCase()
+      const intensityMatch = filterIntensity === 'All' || dbIntensity === filterIntensity.toLowerCase()
       return sMatch && intensityMatch
     })
   }, [products, filterScent, filterIntensity])
@@ -144,8 +141,53 @@ export default function Shop() {
     setTimeout(() => setCheckoutLoading(null), 800)
   }
 
-  const ScentFilters = ['All', 'Original', 'Icy Rush', 'Inferno', 'Focus', 'Calm Sharp']
-  const IntensityFilters = ['All', 'Mild', 'Medium', 'Extreme']
+  // Labels are what we show; values are what the DB stores
+  const ScentFilters: { label: string; value: string }[] = [
+    { label: 'All', value: 'All' },
+    { label: 'Original', value: 'original' },
+    { label: 'Icy Rush', value: 'icy_rush' },
+    { label: 'Inferno', value: 'inferno' },
+    { label: 'Focus', value: 'focus' },
+    { label: 'Calm Sharp', value: 'calm_sharp' },
+  ]
+  const IntensityFilters: { label: string; value: string }[] = [
+    { label: 'All', value: 'All' },
+    { label: 'Mild', value: 'mild' },
+    { label: 'Medium', value: 'medium' },
+    { label: 'Extreme', value: 'extreme' },
+  ]
+
+  function getProductDescription(scent: string | null, intensity: string | null): string {
+    const s = (scent || '').toLowerCase()
+    const i = (intensity || '').toLowerCase()
+    const mild = i.includes('mild')
+    const extreme = i.includes('extreme')
+
+    if (s.includes('icy')) {
+      if (mild) return 'A cool, measured hit of arctic mint that lifts brain fog without overpowering. Perfect for sustained background focus during long work sessions.'
+      if (extreme) return 'Arctic menthol at full intensity — a sharp, immediate jolt that clears the mind and sharpens reaction time in seconds. Not for the faint-hearted.'
+      return 'Crisp peppermint and eucalyptus engineered to trigger an instant alertness response. A clean, refreshing experience that cuts through mental fatigue.'
+    }
+    if (s.includes('inferno')) {
+      if (mild) return 'A warm, smouldering blend of chili and black pepper — enough heat to ignite focus without the burn. Ideal for early-morning routines.'
+      if (extreme) return 'Maximum capsaicin intensity. Delivers a fierce, immediate rush of energy and heightened awareness. Reserved for moments that demand peak performance.'
+      return 'Chili and ginger combine to create a bold, warming sensory impact that fires up your nervous system and keeps fatigue at bay.'
+    }
+    if (s.includes('focus')) {
+      if (mild) return 'Gentle green tea and rosemary — a soft, natural lift that sharpens concentration without disrupting flow. Great for reading or creative work.'
+      if (extreme) return 'High-intensity botanical clarity formula: concentrated eucalyptus and peppermint layered over green tea extract for unstoppable deep-focus.'
+      return 'A precision blend of nootropic botanicals — green tea, rosemary, and lemon verbena — designed to enhance cognitive clarity and sustained attention.'
+    }
+    if (s.includes('calm')) {
+      if (mild) return 'Soft lavender and chamomile at a gentle intensity. Takes the edge off anxiety while keeping you grounded and quietly alert.'
+      if (extreme) return 'Full-spectrum calm at maximum depth — adaptogenic ashwagandha and lavender combined to silence stress and restore sharp, composed thinking.'
+      return 'Lavender, chamomile, and ashwagandha create a rare paradox: profound calm paired with sustained mental clarity. For when you need to be sharp without the tension.'
+    }
+    // original
+    if (mild) return 'The classic Snapd formula at a lighter intensity — an approachable entry point into inhaled alertness. Clean, subtle, and consistently effective.'
+    if (extreme) return 'Original Snapd pushed to its upper limit. Maximum bio-available caffeine and L-theanine delivery for those who demand an uncompromising edge.'
+    return 'The formula that started it all. Pure caffeine and L-theanine in perfect synergy — instant alertness without the jitters, no crash guaranteed.'
+  }
 
   async function onSubscribe(plan: 'monthly' | 'annual') {
     if (!user) {
@@ -703,22 +745,22 @@ export default function Shop() {
             <div className="filter-row">
               {ScentFilters.map(f => (
                 <button
-                  key={f}
-                  className={"filter-pill" + (filterScent === f ? " active" : "")}
-                  onClick={() => setFilterScent(f)}
+                  key={f.value}
+                  className={"filter-pill" + (filterScent === f.value ? " active" : "")}
+                  onClick={() => setFilterScent(f.value)}
                 >
-                  {f}
+                  {f.label}
                 </button>
               ))}
             </div>
             <div className="filter-row">
               {IntensityFilters.map(f => (
                 <button
-                  key={f}
-                  className={"filter-pill" + (filterIntensity === f ? " active" : "")}
-                  onClick={() => setFilterIntensity(f)}
+                  key={f.value}
+                  className={"filter-pill" + (filterIntensity === f.value ? " active" : "")}
+                  onClick={() => setFilterIntensity(f.value)}
                 >
-                  {f}
+                  {f.label}
                 </button>
               ))}
             </div>
@@ -753,7 +795,7 @@ export default function Shop() {
                           <img src={getImageSrc(p)} alt={p.name} style={{ height: '180px', objectFit: 'contain' }} />
                         </div>
                         <h3 className="product-name">{p.name}</h3>
-                        <p className="product-notes">{p.description || p.scent}</p>
+                        <p className="product-notes">{getProductDescription(p.scent, p.intensity)}</p>
                         <div className="product-intensity">Intensity: {p.intensity}</div>
                         
                         <div className="product-bottom">
@@ -874,7 +916,7 @@ export default function Shop() {
                 <div className="modal-info">
                   <h2 className="modal-title">{selectedProduct.name}</h2>
                   <div className="modal-scent">{selectedProduct.scent} · {selectedProduct.intensity} Intensity</div>
-                  <p className="modal-desc">{selectedProduct.description || "Precision-engineered formula designed to provide instant clarity without the crash."}</p>
+                  <p className="modal-desc">{getProductDescription(selectedProduct.scent, selectedProduct.intensity)}</p>
                   <div className="modal-price">{formatPrice(selectedProduct.price_cents)}</div>
                   <button 
                     className="modal-btn" 
