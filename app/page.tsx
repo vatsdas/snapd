@@ -520,7 +520,7 @@ export default function Home() {
                     transform: `scale(${tubeScale})`
                   }}
                 >
-                  <img src="/product-tube.png" alt="Snapd Inhaler Tube" className="tube-image" />
+                  <img src="/product-tube-hero.png" alt="Snapd Inhaler Tube" className="tube-image" />
                 </div>
 
                 {/* Anatomy Descriptions */}
